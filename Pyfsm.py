@@ -37,7 +37,10 @@ class Pyfsm():
         # prepare enabled libs for state handler injection
         for class_instance in enabledLibs:
             # add dict entries <class-name> -> <class-instance>
-            self.enabledLibs[str(type(class_instance).__name__)] = class_instance
+            self.enabledLibs[type(class_instance).__name__] = class_instance
+
+        print("ENABLED ONE")
+        print(str(self.enabledLibs))
 
         # TODO: figure out how to init this properly, given the new format
 
