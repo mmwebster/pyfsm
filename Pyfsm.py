@@ -7,7 +7,7 @@ import Event
 import Service
 from Job import Job
 import EventListener
-import PyFSMException
+import PyfsmException
 from Queue import PriorityQueue
 from DropboxStorage import DropboxStorage
 from LocalStorage import LocalStorage
@@ -15,9 +15,9 @@ from LocalStorage import LocalStorage
 #####################################################################################
 # Class Definitions
 #####################################################################################
-class PyFSM():
+class Pyfsm():
     def __init__(self, services, eventListeners, stateHandlers, enabledLibs):
-        print "Init'ing PyFSM"
+        print "Init'ing Pyfsm"
         # init internals
         self.services = []
         self.eventListeners = []
@@ -47,7 +47,7 @@ class PyFSM():
         if "INIT" in self.stateHandlers:
             self.currentStateHandler = self.stateHandlers["INIT"]
         else:
-            raise PyFSMException.InitializationError("No InitState defined in the stateHandlers dictionary.")
+            raise PyfsmException.InitializationError("No InitState defined in the stateHandlers dictionary.")
 
         # instantiate the event queue
         self.eventQueue = PriorityQueue() # thread-safe queue
@@ -87,7 +87,7 @@ class PyFSM():
                         # set current state to next state
                         self.currentStateHandler = self.stateHandlers[next_state_str]
                     else:
-                        raise PyFSMException.UndefinedStateError("State " + next_state_str + " is undefined.")
+                        raise PyfsmException.UndefinedStateError("State " + next_state_str + " is undefined.")
                     # run next state with entry event (ignore return)
                     self._run(self.currentStateHandler, Event.EntryEvent())
 
@@ -108,7 +108,7 @@ class PyFSM():
             if lib_name in self.enabledLibs:
                 args[lib_name] = self.enabledLibs[lib_name]
             else:
-                raise PyFSMException.DisabledLibError("The requested lib \""
+                raise PyfsmException.DisabledLibError("The requested lib \""
                         + lib_name + "\" was not enabled")
         print("ARGS:")
         print(str(args))
