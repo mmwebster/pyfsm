@@ -104,6 +104,8 @@ class Pyfsm():
                       "event_queue": self.eventQueue,
                       "job_queue": self.jobProcessorService })
         # inject requested lib instances
+        print("ENABLED LIBS")
+        print(str(self.enabledLibs))
         for lib_name in currentStateHandler.args():
             if lib_name in self.enabledLibs:
                 args[lib_name] = self.enabledLibs[lib_name]
