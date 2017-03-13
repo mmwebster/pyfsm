@@ -39,14 +39,9 @@ class Pyfsm():
             # add dict entries <class-name> -> <class-instance>
             self.enabledLibs[type(class_instance).__name__] = class_instance
 
-        print("ENABLED ONE")
-        print(str(self.enabledLibs))
-
         # TODO: figure out how to init this properly, given the new format
 
         # init current state
-        print("State handlers:")
-        print(str(self.stateHandlers))
         if "INIT" in self.stateHandlers:
             self.currentStateHandler = self.stateHandlers["INIT"]
         else:
@@ -107,16 +102,12 @@ class Pyfsm():
                       "event_queue": self.eventQueue,
                       "job_queue": self.jobProcessorService })
         # inject requested lib instances
-        print("ENABLED LIBS")
-        print(str(self.enabledLibs))
         for lib_name in currentStateHandler.args():
             if lib_name in self.enabledLibs:
                 args[lib_name] = self.enabledLibs[lib_name]
             else:
                 raise PyfsmException.DisabledLibError("The requested lib \""
                         + lib_name + "\" was not enabled")
-        print("ARGS:")
-        print(str(args))
         # call the current state's handler function and save it's returned data
         state_return = currentStateHandler.run(args)
         return state_return

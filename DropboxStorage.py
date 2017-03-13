@@ -19,7 +19,7 @@ from os import environ as ENV
 #################################################################################
 # Class definitions
 #################################################################################
-class DropboxStorage():
+class DropboxStorage(object):
     def __init__(self, auth_token, drive_path):
         self.auth_token = auth_token
         self.drive_path = drive_path

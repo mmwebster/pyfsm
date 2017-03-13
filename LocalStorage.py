@@ -19,7 +19,7 @@ from os import environ as ENV
 #################################################################################
 # Class definitions
 #################################################################################
-class LocalStorage():
+class LocalStorage(object):
     def __init__(self, drive_path):
         self.drive_path = drive_path
         # load values contained in config file
