@@ -16,13 +16,14 @@ from LocalStorage import LocalStorage
 # Class Definitions
 #####################################################################################
 class Pyfsm():
-    def __init__(self, services, eventListeners, stateHandlers, enabledLibs):
+    def __init__(self, services, eventListeners, stateHandlers, enabledLibs, commonArgs):
         print "Init'ing Pyfsm"
         # init internals
         self.services = []
         self.eventListeners = []
         self.stateHandlers = {}
         self.enabledLibs = {}
+        self.commonArgs = commonArgs # passed to EVERY state handler
         # add defaults
         self.jobProcessorService = Service.JobProcessorService(3)
         self.services.extend([self.jobProcessorService])
@@ -100,7 +101,8 @@ class Pyfsm():
         # Add default args
         args.update({ "event": event,
                       "event_queue": self.eventQueue,
-                      "job_queue": self.jobProcessorService })
+                      "job_queue": self.jobProcessorService,
+                      "common_args": self.commonArgs })
         # inject requested lib instances
         for lib_name in currentStateHandler.args():
             if lib_name in self.enabledLibs:
