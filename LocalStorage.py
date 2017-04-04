@@ -25,6 +25,9 @@ class LocalStorage(object):
         # load values contained in config file
         self.config = {}
         self.load_config_file()
+        # load values contained in id-lookup-table file
+        self.id_lookup_table = {}
+        self.load_id_lookup_table()
         # hash of when the student checked in, if they have
         self.time_in_entries = {}
 
@@ -35,11 +38,25 @@ class LocalStorage(object):
 
             for row in enumerate(config_file_reader):
                 self.config[str(row[1][0]).strip()] = str(row[1][1]).strip()
-                print("storing (" + str(row[1][0]).strip() + "," + str(row[1][1]).strip() + ")")
+                print("LS-CONFIG: storing (" + str(row[1][0]).strip() + "," + str(row[1][1]).strip() + ")")
+
+    def load_id_lookup_table(self)
+        with open(self.drive_path + "/" + "id-lookup-table.csv", 'r') as id_file:
+            id_file_reader = csv.reader(id_file)
+
+            for row in enumerate(id_file_reader):
+                self.[str(row[1][0]).strip()] = str(row[1][1]).strip()
+                print("LS-USER storing (" + str(row[1][0]).strip() + "," + str(row[1][1]).strip() + ")")
 
     def read_config_value(self, key):
         if key in self.config:
             return self.config[key]
+        else:
+            return "NOT_FOUND"
+
+    def lookup_id(self, user_id):
+        if user_id in self.user_ids:
+            return self.id_lookup_table[user_id]
         else:
             return "NOT_FOUND"
 
