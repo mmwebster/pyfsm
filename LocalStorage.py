@@ -44,6 +44,8 @@ class LocalStorage(object):
             return "NOT_FOUND"
 
     def append_rows(self, file_name, data):
+        if 'ATTENDANCE_TRACKER_TEST' in ENV or int(ENV['ATTENDANCE_TRACKER_TEST']) == 1:
+            print("Appending rows to path: " + self.drive_path + "/" + file_name)
         with open(self.drive_path + "/" + file_name, 'ab') as f:
             csv_writer = csv.writer(f)
             csv_writer.writerows(data)
