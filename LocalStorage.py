@@ -40,12 +40,12 @@ class LocalStorage(object):
                 self.config[str(row[1][0]).strip()] = str(row[1][1]).strip()
                 print("LS-CONFIG: storing (" + str(row[1][0]).strip() + "," + str(row[1][1]).strip() + ")")
 
-    def load_id_lookup_table(self)
+    def load_id_lookup_table(self):
         with open(self.drive_path + "/" + "id-lookup-table.csv", 'r') as id_file:
             id_file_reader = csv.reader(id_file)
 
             for row in enumerate(id_file_reader):
-                self.[str(row[1][0]).strip()] = str(row[1][1]).strip()
+                self.id_lookup_table[str(row[1][0]).strip()] = str(row[1][1]).strip()
                 print("LS-USER storing (" + str(row[1][0]).strip() + "," + str(row[1][1]).strip() + ")")
 
     def read_config_value(self, key):
@@ -55,7 +55,7 @@ class LocalStorage(object):
             return "NOT_FOUND"
 
     def lookup_id(self, user_id):
-        if user_id in self.user_ids:
+        if user_id in self.id_lookup_table:
             return self.id_lookup_table[user_id]
         else:
             return "NOT_FOUND"
