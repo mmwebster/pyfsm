@@ -20,8 +20,14 @@ from os import environ as ENV
 # Class definitions
 #################################################################################
 class LocalStorage(object):
-    def __init__(self, drive_path):
-        self.drive_path = drive_path
+    def __init__(self):
+        if not 'ATTENDANCE_TRACKER_TEST' in ENV or \
+                not int(ENV['ATTENDANCE_TRACKER_TEST']) == 1:
+            # this is REQUIRED...no way to read config before one knows where
+            # it's located
+            self.drive_path = "/media/pi/USB-STORAGE"
+        else:
+            self.drive_path = ENV["AT_LOCAL_STORAGE_PATH"]
         # load values contained in config file
         self.config = {}
         self.load_config_file()
