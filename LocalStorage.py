@@ -3,16 +3,12 @@
 #################################################################################
 # Import libraries
 #################################################################################
+import os
 import time
 import csv
 import os.path
 from datetime import datetime, date, timedelta
 from os import environ as ENV
-
-# imports for production mode
-if not 'ATTENDANCE_TRACKER_TEST' in ENV or \
-        not int(ENV['ATTENDANCE_TRACKER_TEST']) == 1:
-    import os.system
 
 #################################################################################
 # Perform initializations
