@@ -5,7 +5,14 @@
 #################################################################################
 import time
 import csv
+import os.path
+from datetime import datetime, date, timedelta
 from os import environ as ENV
+
+# imports for production mode
+if not 'ATTENDANCE_TRACKER_TEST' in ENV or \
+        not int(ENV['ATTENDANCE_TRACKER_TEST']) == 1:
+    import os.system
 
 #################################################################################
 # Perform initializations
@@ -20,7 +27,7 @@ from os import environ as ENV
 # Class definitions
 #################################################################################
 class LocalStorage(object):
-    def __init__(self):
+    def __init__(self, ledQueue):
         if not 'ATTENDANCE_TRACKER_TEST' in ENV or \
                 not int(ENV['ATTENDANCE_TRACKER_TEST']) == 1:
             # this is REQUIRED...no way to read config before one knows where
@@ -28,6 +35,7 @@ class LocalStorage(object):
             self.drive_path = "/media/pi/USB-STORAGE"
         else:
             self.drive_path = ENV["AT_LOCAL_STORAGE_PATH"]
+        self.ledQueue = ledQueue
         # load values contained in config file
         self.config = {}
         self.load_config_file()
@@ -39,12 +47,23 @@ class LocalStorage(object):
 
     # @desc Opens config file, stores all of its key/value pairs, then closes it
     def load_config_file(self):
-        with open(self.drive_path + "/" + "config.csv", 'r') as config_file:
-            config_file_reader = csv.reader(config_file)
+        try:
+            with open(self.drive_path + "/" + "config.csv", 'r') as config_file:
+                config_file_reader = csv.reader(config_file)
 
-            for row in enumerate(config_file_reader):
-                self.config[str(row[1][0]).strip()] = str(row[1][1]).strip()
-                print("LS-CONFIG: storing (" + str(row[1][0]).strip() + "," + str(row[1][1]).strip() + ")")
+                for row in enumerate(config_file_reader):
+                    self.config[str(row[1][0]).strip()] = str(row[1][1]).strip()
+                    print("LS-CONFIG: storing (" + str(row[1][0]).strip() + "," + str(row[1][1]).strip() + ")")
+        except:
+            # failed to open config file, it's either not present, USB storage
+            # device is not plugged in, or it is not named properly
+            # TODO: replace with blocking LED blink version (once implemented)
+            self.ledQueue.put(LEDIndicator.LED_TYPES[4])
+            time.sleep(.9)
+            print("SYSTEM SHUTTING DOWN")
+            if not 'ATTENDANCE_TRACKER_TEST' in ENV or \
+                    not int(ENV['ATTENDANCE_TRACKER_TEST']) == 1:
+                os.system("sudo shutdown now") # fatal error shutdown the system
 
     def load_id_lookup_table(self):
         with open(self.drive_path + "/" + "id-lookup-table.csv", 'r') as id_file:
@@ -67,12 +86,36 @@ class LocalStorage(object):
             return "NOT_FOUND"
 
     def append_rows(self, file_name, data):
-        if not 'ATTENDANCE_TRACKER_TEST' in ENV or \
-                not int(ENV['ATTENDANCE_TRACKER_TEST']) == 1:
-            print("Appending rows to path: " + self.drive_path + "/" + file_name)
-        with open(self.drive_path + "/" + file_name, 'ab') as f:
+        path = self.drive_path + "/time-entries/" + file_name
+        print("Appending rows to path: " + path)
+        with open(path, 'ab+') as f:
             csv_writer = csv.writer(f)
             csv_writer.writerows(data)
+
+    # @desc Get's the user configured time period type for time entries
+    #       returns the exact value based on the period. Ex/ if user
+    #       configures "time-entry-file-period, by-week" then the
+    #       returned value might be "week_2017-4-3" or "week_2017-3-27"
+    #       which are both Mondays of their respective weeks
+    def get_current_time_period(self):
+        # get the config type
+        time_period_type = self.read_config_value("time-entry-file-period")
+        # branch based on type
+        dt = ""
+        if time_period_type == "by-hour":
+            dt += datetime.now().strftime("hour_%Y-%m-%d_%H_")
+        elif time_period_type == "by-day":
+            dt += datetime.now().strftime("day_%Y-%m-%d_")
+        elif time_period_type == "by-week":
+            today = date.today()
+            this_monday = today - timedelta(today.weekday())
+            dt += this_monday.strftime("week_%Y-%m-%d_")
+        elif time_period_type == "by-month":
+            dt += datetime.now().strftime("month_%Y-%m_")
+        else:
+            print("ERROR: invalid value for time-entry-file-period")
+            return None
+        return dt
 
 #################################################################################
 # House keeping..close interfaces and processes
