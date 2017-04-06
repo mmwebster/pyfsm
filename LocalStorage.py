@@ -57,6 +57,7 @@ class LocalStorage(object):
             # TODO: replace with blocking LED blink version (once implemented)
             self.ledQueue.put(LEDIndicator.LED_TYPES[4])
             time.sleep(.9)
+            print("ERROR: No USB storage device or configure file")
             print("SYSTEM SHUTTING DOWN")
             if not 'ATTENDANCE_TRACKER_TEST' in ENV or \
                     not int(ENV['ATTENDANCE_TRACKER_TEST']) == 1:
