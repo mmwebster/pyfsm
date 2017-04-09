@@ -39,8 +39,12 @@ class LocalStorage(object):
         # load values contained in id-lookup-table file
         self.id_lookup_table = {}
         self.load_id_lookup_table()
+        #create hash, populate hash load w members.csv
+        self.members = {}
+        self.load_members_file()
         # hash of when the student checked in, if they have
         self.time_in_entries = {}
+
 
     # @desc Opens config file, stores all of its key/value pairs, then closes it
     def load_config_file(self):
@@ -63,6 +67,14 @@ class LocalStorage(object):
                     not int(ENV['ATTENDANCE_TRACKER_TEST']) == 1:
                 os.system("sudo shutdown now") # fatal error shutdown the system
 
+    def load_members_file(self):
+        with open(self.drive_path + "/" + "members.csv", 'r') as members_file:
+            members_file_reader = csv.reader(members_file)
+
+            for row in enumerate(members_file_reader):
+                self.members[str(row[1][0]).strip()] = str(row[1][1]).strip()
+                print("LS-USER storing (" + str(row[1][0]).strip() + "," + str(row[1][1]).strip() + ")")
+
     def load_id_lookup_table(self):
         with open(self.drive_path + "/" + "id-lookup-table.csv", 'r') as id_file:
             id_file_reader = csv.reader(id_file)
@@ -82,6 +94,12 @@ class LocalStorage(object):
             return self.id_lookup_table[user_id]
         else:
             return "NOT_FOUND"
+
+    def is_member(self, user_id):
+        if user_id in self.members:
+            return True
+        else:
+            return False
 
     def append_rows(self, file_name, data):
         path = self.drive_path + "/time-entries/" + file_name
