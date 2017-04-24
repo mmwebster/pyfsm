@@ -6,9 +6,9 @@
 # Universal imports
 import time
 import math
-import Event
 import threading
-from Queue import Queue
+from queue import Queue
+import pyfsm.Event as Event
 from os import environ as ENV
 
 #################################################################################
@@ -31,8 +31,8 @@ class EventListener(threading.Thread):
     #       configured to do so.
     def run(self):
         # run event listeners in their test mode if available
-        if 'ATTENDANCE_TRACKER_TEST' in ENV:
-            if int(ENV['ATTENDANCE_TRACKER_TEST']) == 1:
+        if 'PYFSM_TEST_MODE' in ENV:
+            if int(ENV['PYFSM_TEST_MODE']) == 1:
                 self.run_test()
                 return # exit once completed (don't run prod version)
         # otherwise, run event listeners in their production mode

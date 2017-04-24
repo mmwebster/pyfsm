@@ -3,20 +3,20 @@
 #####################################################################################
 # Import libraries
 #####################################################################################
-import Event
-import Service
-from Job import Job
-import EventListener
-import PyfsmException
-from Queue import PriorityQueue
-from LocalStorage import LocalStorage
+from pyfsm.Job import Job
+import pyfsm.Event as Event
+from queue import PriorityQueue
+import pyfsm.Service as Service
+import pyfsm.EventListener as EventListener
+from pyfsm.LocalStorage import LocalStorage
+import pyfsm.PyfsmException as PyfsmException
 
 #####################################################################################
 # Class Definitions
 #####################################################################################
 class Pyfsm():
     def __init__(self, services, eventListeners, stateHandlers, enabledLibs, commonArgs):
-        print "Init'ing Pyfsm"
+        print("Init'ing Pyfsm")
         # init internals
         self.services = []
         self.eventListeners = []

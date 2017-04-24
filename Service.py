@@ -6,7 +6,7 @@
 import time
 import threading
 from os import environ as ENV
-from Queue import PriorityQueue
+from queue import PriorityQueue
 
 #################################################################################
 # Perform initializations

@@ -8,7 +8,6 @@ import time
 import csv
 import os.path
 from os import environ as ENV
-from LEDIndicator import LEDIndicator
 from datetime import datetime, date, timedelta
 
 #################################################################################
@@ -24,14 +23,15 @@ from datetime import datetime, date, timedelta
 # Class definitions
 #################################################################################
 class LocalStorage(object):
-    def __init__(self, ledQueue):
-        if not 'ATTENDANCE_TRACKER_TEST' in ENV or \
-                not int(ENV['ATTENDANCE_TRACKER_TEST']) == 1:
-            # this is REQUIRED...no way to read config before one knows where
-            # it's located
-            self.drive_path = "/media/pi/USB-STORAGE"
-        else:
-            self.drive_path = ENV["AT_LOCAL_STORAGE_PATH"]
+    def __init__(self):
+        # if not 'PYFSM_TEST_MODE' in ENV or \
+        #         not int(ENV['PYFSM_TEST_MODE']) == 1:
+        #     # this is REQUIRED...no way to read config before one knows where
+        #     # it's located
+        #     self.drive_path = "/media/pi/USB-STORAGE"
+        # else:
+        #     self.drive_path = ENV["LOCAL_STORAGE_PATH"]
+        self.drive_path = ENV["LOCAL_STORAGE_PATH"]
         self.ledQueue = ledQueue
         # load values contained in config file
         self.config = {}
@@ -54,13 +54,11 @@ class LocalStorage(object):
         except:
             # failed to open config file, it's either not present, USB storage
             # device is not plugged in, or it is not named properly
-            # TODO: replace with blocking LED blink version (once implemented)
-            self.ledQueue.put(LEDIndicator.LED_TYPES[4])
             time.sleep(.9)
             print("ERROR: No USB storage device or configure file")
             print("SYSTEM SHUTTING DOWN")
-            if not 'ATTENDANCE_TRACKER_TEST' in ENV or \
-                    not int(ENV['ATTENDANCE_TRACKER_TEST']) == 1:
+            if not 'PYFSM_TEST_MODE' in ENV or \
+                    not int(ENV['PYFSM_TEST_MODE']) == 1:
                 os.system("sudo shutdown now") # fatal error shutdown the system
 
     def load_id_lookup_table(self):
