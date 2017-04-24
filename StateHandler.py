@@ -58,7 +58,7 @@ class StateHandler(object):
 #
 #     @abstractproperty
 #     def args(self):
-#         return [ "LocalStorage", "DropboxStorage"]
+#         return [ "LocalStorage" ]
 #
 #     @abstractmethod
 #     def run(self, args):

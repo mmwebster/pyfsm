@@ -9,7 +9,6 @@ from Job import Job
 import EventListener
 import PyfsmException
 from Queue import PriorityQueue
-from DropboxStorage import DropboxStorage
 from LocalStorage import LocalStorage
 
 #####################################################################################

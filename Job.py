@@ -7,7 +7,6 @@ import time
 import threading
 from datetime import datetime
 from os import environ as ENV
-from DropboxStorage import DropboxStorage
 
 #################################################################################
 # Perform initializations
